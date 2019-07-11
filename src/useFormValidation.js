@@ -1,39 +1,37 @@
-import React from "react";
+import { useState, useEffect } from 'react'
 
-function useFormValidation(initialState, validate) {
-  const [values, setValues] = React.useState(initialState);
-  const [errors, setErrors] = React.useState({});
-  const [isSubmitting, setSubmitting] = React.useState(false);
+export const useFormValidation = (initialState, validate, formCallback) => {
+  const [values, setValues] = useState(initialState)
+  const [errors, setErrors] = useState({})
+  const [isDataSubmitting, setIsDataSubmitting] = useState(false)
 
-  React.useEffect(() => {
-    if (isSubmitting) {
-      const noErrors = Object.keys(errors).length === 0;
-      if (noErrors) {
-        console.log("authenticated!", values.email, values.password);
-        setSubmitting(false);
-      } else {
-        setSubmitting(false);
-      }
+  // as a result (side effect) of [value] changing, do this.
+  // as a side effect of the value of errors changing,
+  // check if there are not errors and if so, call the callback function.
+  useEffect(() => {
+    if (isDataSubmitting) {
+      const noErrors = Object.keys(errors).length === 0
+      if (noErrors) formCallback('No errors, submit callback called!')
+      setIsDataSubmitting(false)
     }
-  }, [errors]);
+  }, [errors, isDataSubmitting, formCallback])
 
-  function handleChange(event) {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
+  const handleChange = event => {
+    if (event) {
+      event.persist()
+      setValues({
+        ...values,
+        [event.target.name]: event.target.value
+      })
+    }
   }
 
-  function handleBlur() {
-    const validationErrors = validate(values);
-    setErrors(validationErrors);
-  }
+  const handleBlur = () => setErrors(validate(values))
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const validationErrors = validate(values);
-    setErrors(validationErrors);
-    setSubmitting(true);
+  const handleSubmit = event => {
+    if (event) event.preventDefault()
+    setIsDataSubmitting(true)
+    setErrors(validate(values))
   }
 
   return {
@@ -42,8 +40,6 @@ function useFormValidation(initialState, validate) {
     handleBlur,
     values,
     errors,
-    isSubmitting
-  };
+    isDataSubmitting,
+  }
 }
-
-export default useFormValidation;

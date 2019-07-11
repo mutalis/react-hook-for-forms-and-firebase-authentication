@@ -1,25 +1,25 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react'
+import ReactDOM from 'react-dom'
 
-import "./styles.css";
+import './styles.css'
 
-import useFormValidation from "./useFormValidation";
-import validateAuth from "./validateAuth";
+import {useFormValidation} from './useFormValidation'
+import {validationRules} from './LoginFormValidationRules'
 
-const INITIAL_STATE = {
-  email: "",
-  password: ""
-};
+const INITIAL_STATE = {email: '', password: ''}
 
-function Register() {
+const Register = () => {
+
+  const sendToConsole = txt => console.log(txt)
+
   const {
     handleSubmit,
     handleChange,
     handleBlur,
     values,
     errors,
-    isSubmitting
-  } = useFormValidation(INITIAL_STATE, validateAuth);
+    isDataSubmitting,
+  } = useFormValidation(INITIAL_STATE, validationRules, sendToConsole)
   // const [email, setEmail] = React.useState("");
   // const [password, setPassword] = React.useState("");
 
@@ -30,11 +30,13 @@ function Register() {
         <input
           onChange={handleChange}
           onBlur={handleBlur}
-          name="email"
           value={values.email}
           className={errors.email && "error-input"}
+          type="email"
+          name="email"
           autoComplete="off"
           placeholder="Your email address"
+          required
         />
         {errors.email && <p className="error-text">{errors.email}</p>}
         <input
@@ -42,20 +44,22 @@ function Register() {
           onBlur={handleBlur}
           value={values.password}
           className={errors.password && "error-input"}
-          name="password"
           type="password"
+          name="password"
+          autoComplete="off"
           placeholder="Choose a safe password"
+          required
         />
         {errors.password && <p className="error-text">{errors.password}</p>}
         <div>
-          <button disabled={isSubmitting} type="submit">
+          <button disabled={isDataSubmitting} type="submit">
             Submit
           </button>
         </div>
       </form>
     </div>
-  );
+  )
 }
 
-const rootElement = document.getElementById("root");
-ReactDOM.render(<Register />, rootElement);
+const rootElement = document.getElementById("root")
+ReactDOM.render(<Register />, rootElement)
