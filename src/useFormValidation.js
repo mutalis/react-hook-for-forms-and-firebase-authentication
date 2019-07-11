@@ -11,14 +11,14 @@ export const useFormValidation = (initialState, validate, formCallback) => {
   useEffect(() => {
     if (isDataSubmitting) {
       const noErrors = Object.keys(errors).length === 0
-      if (noErrors) formCallback('No errors, submit callback called!')
+      if (noErrors) formCallback()
       setIsDataSubmitting(false)
     }
   }, [errors, isDataSubmitting, formCallback])
 
   const handleChange = event => {
     if (event) {
-      event.persist()
+      // event.persist()
       setValues({
         ...values,
         [event.target.name]: event.target.value

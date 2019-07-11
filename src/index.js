@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import ReactDOM from 'react-dom'
 
 import './styles.css'
@@ -9,8 +9,13 @@ import {validationRules} from './LoginFormValidationRules'
 const INITIAL_STATE = {email: '', password: ''}
 
 const Register = () => {
+  const [authenticationError, setauthenticationError] = useState(null)
 
-  const sendToConsole = txt => console.log(txt)
+  const authenticateUser = () => {
+    const {email, password} = values
+    console.log(email, password)
+    setauthenticationError('Invalid user')
+  }
 
   const {
     handleSubmit,
@@ -19,7 +24,7 @@ const Register = () => {
     values,
     errors,
     isDataSubmitting,
-  } = useFormValidation(INITIAL_STATE, validationRules, sendToConsole)
+  } = useFormValidation(INITIAL_STATE, validationRules, authenticateUser)
   // const [email, setEmail] = React.useState("");
   // const [password, setPassword] = React.useState("");
 
@@ -51,6 +56,7 @@ const Register = () => {
           required
         />
         {errors.password && <p className="error-text">{errors.password}</p>}
+        {authenticationError && <p className="error-text">{authenticationError}</p>}
         <div>
           <button disabled={isDataSubmitting} type="submit">
             Submit
